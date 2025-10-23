@@ -11,23 +11,23 @@ export interface Dimension {
 export const questions: Question[] = [
   {
     id: 1,
-    text: "Members identify issues, plan to solve them together, and ask for help if they need it.",
+    text: "Members who are not reps identify issues, plan to solve them together, and ask for help if they need it.",
   },
   {
     id: 2,
-    text: "The union responds to management actions to make sure that changes reflect members' interests.",
+    text: "Reps respond to management actions to make sure that changes reflect members' interests.",
   },
   {
     id: 3,
-    text: "Members and reps continually assess where they hold power in the workplace, who their biggest champions are and where they are weak.",
+    text: "It's more important to focus on delivering for members than spending time on mapping out the details of where and who they are.",
   },
   {
     id: 4,
-    text: "Reps advise members that the union will try to solve problems on their behalf.",
+    text: "Reps solve problems on their members' behalf.",
   },
   {
     id: 5,
-    text: "Members develop and share updates, messages, and campaign materials within the workplace.",
+    text: "Word-of-mouth is the best way to share updates, messages, and campaign materials within the workplace.",
   },
   {
     id: 6,
@@ -35,23 +35,23 @@ export const questions: Question[] = [
   },
   {
     id: 7,
-    text: "Members contact the union when issues arise, trusting it to respond and support.",
+    text: "Members should contact the union when issues arise, trusting reps to respond and support.",
   },
   {
     id: 8,
-    text: "Recruitment and organising are two separate but integrated core activities of the union.",
+    text: "Recruitment and organising should be woven into everything the union does.",
   },
   {
     id: 9,
-    text: "Members identify with the union and contribute to it; an attack on the union is an attack on themselves.",
+    text: "Members should appreciate the union as an independent third party in the workplace.",
   },
   {
     id: 10,
-    text: "Communications from the union provide regular updates, guidance, and policy information to members.",
+    text: "Regular communications from the union provide updates, guidance, and policy information to members.",
   },
   {
     id: 11,
-    text: "Negotiations are shaped by active member participation and involvement.",
+    text: "Negotiations should actively involve as many members as possible.",
   },
   {
     id: 12,
@@ -59,11 +59,11 @@ export const questions: Question[] = [
   },
   {
     id: 13,
-    text: "Change is mostly achieved outside of formal consultation and negotiation meetings.",
+    text: "Formal consultation and negotiation meetings are where the union can win the biggest changes.",
   },
   {
     id: 14,
-    text: "Members see themselves as the union and take action themselves.",
+    text: "It's usually better for members to take action themselves than for reps to do it.",
   },
   {
     id: 15,
@@ -71,73 +71,75 @@ export const questions: Question[] = [
   },
   {
     id: 16,
-    text: "Members are encouraged to build the union through one-to-one conversations.",
+    text: "One-to-one conversations are the best way to build the union.",
   },
   {
     id: 17,
-    text: "Campaigns primarily engage with staff, rather than being directed at management.",
+    text: "Campaigning should be directed at staff, not management.",
   },
   {
     id: 18,
-    text: "What reps and officials say in negotiations makes or breaks the results.",
+    text: "Negotiations conducted by reps and officials are the most important part of the union's work.",
   },
   {
     id: 19,
-    text: "If members want an issue to be raised with management, they should get in touch with a rep to do so.",
+    text: "If members have an issue they want to raise with management, they should get in touch with a rep to advocate for them.",
   },
   {
     id: 20,
-    text: "Industrial action is an end-point of decisions and actions taken by members.",
+    text: "Industrial action should be led by members as part of a series of actions to achieve a goal.",
   },
   {
     id: 21,
-    text: "Members share decisions and solve problems together with union reps and officials.",
+    text: "Decision-making and strategic planning is the responsibility of members, not reps or officials.",
   },
   {
     id: 22,
-    text: "Training focuses on employment law, procedures, and policy enforcement.",
+    text: "The most valuable training is on employment law, procedures, and policy enforcement.",
   },
   {
     id: 23,
-    text: "Members are concerned about getting value for money out of their membership.",
+    text: "Members are worried about getting value for money out of their membership.",
   },
   {
     id: 24,
-    text: "Members think of the union as a positive and active force.",
+    text: "Members think positively and proudly of their union.",
   },
   {
     id: 25,
-    text: "Reps and officials set the union agenda and involve members in delivering it.",
+    text: "Reps and officials set the union agenda, and seek members' input to deliver it.",
   },
   {
     id: 26,
-    text: "The union is a service which members pay a subscription to access.",
+    text: "Members are paying a subscription and so their union should give them a good service.",
   },
   {
     id: 27,
-    text: "Results are achieved through reps making well-informed and reasoned arguments to change policies and other management actions.",
+    text: "Most meaningful wins are achieved through skilled and well-informed negotiation by reps and officials.",
   },
   {
     id: 28,
-    text: "Union activity happens both in work and outside of work hours.",
+    text: "Union activity should happen both in work and outside of work hours.",
   },
   {
     id: 29,
-    text: "Members identify issues early, plan together, and take initiative to improve conditions.",
+    text: "Members should identify issues early, plan together, and take initiative to improve conditions.",
   },
   {
     id: 30,
-    text: "Recruiting is an activity that the union carries out separately to other day-to-day work.",
+    text: "Recruiting is important, but not an essential part of the union's day-to-day work.",
   },
   {
     id: 31,
-    text: "Recruitment is achieved primarily through members establishing contacts, finding natural leaders and uncovering issues.",
+    text: "Stalls, drop-ins, and membership offers are some of the best ways to recruit members.",
   },
   {
     id: 32,
-    text: "When negotiations reach an impasse, reps ask members to take industrial action for resolution.",
+    text: "When negotiations reach an impasse, reps should ask members to take industrial action.",
   },
 ];
+
+const reverseKeyed = [3, 9, 13, 31];
 
 export const dimensions: Dimension[] = [
   {
@@ -189,7 +191,12 @@ export function calculateDimensionScores(
     );
 
     const score = answeredQuestions.reduce((sum, questionId) => {
-      return sum + (responses[questionId] || 0);
+      const rawScore = responses[questionId] || 0;
+      // Invert score for reverse-keyed questions (1->6, 2->5, 3->4, 4->3, 5->2, 6->1)
+      const adjustedScore = reverseKeyed.includes(questionId)
+        ? 7 - rawScore
+        : rawScore;
+      return sum + adjustedScore;
     }, 0);
 
     const maxScore = answeredQuestions.length * 6; // Only count answered questions
