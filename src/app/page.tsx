@@ -44,7 +44,7 @@ export default function QuizPage() {
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   const progress =
     shuffledQuestions.length > 0
-      ? ((currentQuestionIndex + 1) / shuffledQuestions.length) * 100
+      ? (currentQuestionIndex / shuffledQuestions.length) * 100
       : 0;
   const isLastQuestion = currentQuestionIndex === shuffledQuestions.length - 1;
 

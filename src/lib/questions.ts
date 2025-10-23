@@ -39,7 +39,7 @@ export const questions: Question[] = [
   },
   {
     id: 8,
-    text: "Recruitment and organising should be woven into everything the union does.",
+    text: "Recruitment and organising are part of everything the union does.",
   },
   {
     id: 9,
@@ -67,7 +67,7 @@ export const questions: Question[] = [
   },
   {
     id: 15,
-    text: "Staff in the workplace feel frustrated by the union when it doesn't get the results they want.",
+    text: "Staff deserve for their union to get the best results for them possible and to be frustrated if it doesn't.",
   },
   {
     id: 16,
@@ -139,7 +139,7 @@ export const questions: Question[] = [
   },
 ];
 
-const reverseKeyed = [3, 9, 13, 31];
+export const reverseKeyed = [3, 9, 13, 31];
 
 export const dimensions: Dimension[] = [
   {
