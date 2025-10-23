@@ -11,6 +11,7 @@ import {
   scaleOptions,
   QuizResponse,
   calculateDimensionScores,
+  Question,
 } from "@/lib/questions";
 import { useRouter } from "next/navigation";
 
@@ -19,47 +20,77 @@ export default function QuizPage() {
   const [responses, setResponses] = useState<QuizResponse>({});
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isClient, setIsClient] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
   const router = useRouter();
+
+  // Fisher-Yates shuffle algorithm
+  function shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    if (isClient) {
+      setShuffledQuestions(shuffleArray(questions));
+    }
+  }, [isClient]);
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const currentQuestion = shuffledQuestions[currentQuestionIndex];
+  const progress =
+    shuffledQuestions.length > 0
+      ? ((currentQuestionIndex + 1) / shuffledQuestions.length) * 100
+      : 0;
+  const isLastQuestion = currentQuestionIndex === shuffledQuestions.length - 1;
 
   const handleSkip = () => {
-    if (isClient) {
-      // Mark question as skipped (no response recorded)
-      if (isLastQuestion) {
-        // Calculate scores and navigate to results
-        const scores = calculateDimensionScores(responses);
-        // Store results in sessionStorage for the results page
-        sessionStorage.setItem("quizResults", JSON.stringify(scores));
-        router.push("/results");
-      } else {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedValue("");
+    if (isTransitioning) return;
+
+    setIsTransitioning(true);
+
+    // Add visual feedback for skip
+    setTimeout(() => {
+      if (isClient) {
+        // Mark question as skipped (no response recorded)
+        if (isLastQuestion) {
+          // Calculate scores and navigate to results
+          const scores = calculateDimensionScores(responses);
+          // Store results in sessionStorage for the results page
+          sessionStorage.setItem("quizResults", JSON.stringify(scores));
+          router.push("/results");
+        } else {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setSelectedValue("");
+          setIsTransitioning(false);
+        }
       }
-    }
+    }, 300); // Shorter delay for skip
   };
 
   const handleBack = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setSelectedValue(
-        responses[questions[currentQuestionIndex - 1].id]?.toString() || ""
-      );
-    }
+    if (isTransitioning || currentQuestionIndex === 0) return;
+
+    setCurrentQuestionIndex(currentQuestionIndex - 1);
+    const previousQuestion = shuffledQuestions[currentQuestionIndex - 1];
+    setSelectedValue(
+      previousQuestion ? responses[previousQuestion.id]?.toString() || "" : ""
+    );
   };
 
   const handleValueChange = (value: string) => {
+    if (isTransitioning) return;
+
     setSelectedValue(value);
+    setIsTransitioning(true);
 
     // Auto-advance to next question after a short delay
     setTimeout(() => {
-      if (isClient) {
+      if (isClient && currentQuestion) {
         const newResponses = {
           ...responses,
           [currentQuestion.id]: parseInt(value),
@@ -75,6 +106,7 @@ export default function QuizPage() {
           setResponses(newResponses);
           setCurrentQuestionIndex(currentQuestionIndex + 1);
           setSelectedValue("");
+          setIsTransitioning(false);
         }
       }
     }, 500); // 500ms delay for better UX
@@ -93,11 +125,11 @@ export default function QuizPage() {
 
   return (
     <div className="min-h-screen bg-white p-2 md:p-4">
-      <div className="w-full max-w-2xl mx-auto pt-8 md:pt-16">
+      <div className="w-full max-w-2xl mx-auto pt-4 md:pt-8">
         {/* Header */}
         <div className="text-center mb-4 md:mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
-            Union Personality Questionnaire
+            Union Personality Quiz
           </h1>
           <p className="text-sm md:text-base text-slate-600">
             For each statement, choose the option that best describes how much
@@ -106,10 +138,10 @@ export default function QuizPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-4 md:mb-6">
+        <div className="mb-4 md:mb-6 px-2">
           <div className="flex justify-between text-xs md:text-sm text-slate-600 mb-2">
             <span>
-              Question {currentQuestionIndex + 1} of {questions.length}
+              Question {currentQuestionIndex + 1} of {shuffledQuestions.length}
             </span>
             <span>{Math.round(progress)}% complete</span>
           </div>
@@ -118,26 +150,33 @@ export default function QuizPage() {
 
         {/* Question Card */}
         <Card className="shadow-lg">
-          <CardHeader className="text-center pb-4">
+          <CardHeader className="text-center pb-4 min-h-[120px] md:min-h-[100px] flex items-center justify-center">
             <CardTitle className="text-lg md:text-xl font-semibold text-slate-800">
-              {currentQuestion.text}
+              {currentQuestion?.text || "Loading..."}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <RadioGroup
               value={selectedValue}
               onValueChange={handleValueChange}
-              className="space-y-2"
+              className="space-y-0 sm:space-y-2"
             >
               {scaleOptions.map((option) => (
                 <div
                   key={option.value}
-                  className={`flex items-center space-x-3 p-2 md:p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                  className={`flex items-center space-x-3 p-2 md:p-3 rounded-lg border-2 transition-all duration-200 ${
+                    isTransitioning
+                      ? "cursor-not-allowed opacity-50"
+                      : "cursor-pointer"
+                  } ${
                     selectedValue === option.value.toString()
                       ? "border-slate-800 bg-slate-50 shadow-md"
                       : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                   }`}
-                  onClick={() => handleValueChange(option.value.toString())}
+                  onClick={() =>
+                    !isTransitioning &&
+                    handleValueChange(option.value.toString())
+                  }
                 >
                   <RadioGroupItem
                     value={option.value.toString()}
@@ -162,7 +201,7 @@ export default function QuizPage() {
               <Button
                 variant="outline"
                 onClick={handleBack}
-                disabled={currentQuestionIndex === 0}
+                disabled={currentQuestionIndex === 0 || isTransitioning}
                 className="px-4 py-2 text-sm"
               >
                 Back
@@ -171,9 +210,10 @@ export default function QuizPage() {
               <Button
                 variant="outline"
                 onClick={handleSkip}
-                className="px-4 py-2 text-sm text-slate-600 border-slate-300 hover:bg-slate-50"
+                disabled={isTransitioning}
+                className="px-4 py-2 text-sm text-slate-600 border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                I'm not sure
+                {isTransitioning ? "..." : "I'm not sure"}
               </Button>
             </div>
           </CardContent>
