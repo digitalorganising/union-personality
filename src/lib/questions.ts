@@ -47,7 +47,7 @@ export const questions: Question[] = [
   },
   {
     id: 10,
-    text: "Regular communications from the union provide updates, guidance, and policy information to members.",
+    text: "The union should provide regular updates, guidance, and policy information to members.",
   },
   {
     id: 11,
