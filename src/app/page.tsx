@@ -14,6 +14,7 @@ import {
   Question,
 } from "@/lib/questions";
 import { useRouter } from "next/navigation";
+import DevShortcut from "@/components/DevShortcut";
 
 export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -135,6 +136,8 @@ export default function QuizPage() {
             For each statement, choose the option that best describes how much
             you agree.
           </p>
+
+          {process.env.NODE_ENV === "development" && <DevShortcut />}
         </div>
 
         {/* Progress Bar */}
