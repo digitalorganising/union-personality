@@ -99,7 +99,7 @@ export const questions: Question[] = [
   },
   {
     id: 23,
-    text: "Members are worried about getting value for money out of their membership.",
+    text: "Members should be able to get value for money out of their membership.",
   },
   {
     id: 24,
