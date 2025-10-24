@@ -15,11 +15,11 @@ export const questions: Question[] = [
   },
   {
     id: 2,
-    text: "Reps respond to management actions to make sure that changes reflect members' interests.",
+    text: "Reps consult members before responding to management actions on their behalf.",
   },
   {
     id: 3,
-    text: "It's more important to focus on delivering for members than spending time on mapping out the details of where and who they are.",
+    text: "It's more important to focus on winning for members than to spend time on mapping out the details of where and who they are.",
   },
   {
     id: 4,
@@ -31,7 +31,7 @@ export const questions: Question[] = [
   },
   {
     id: 6,
-    text: "National union teams lobby policymakers and employers to improve working conditions across the sector.",
+    text: "The national union should focus on lobbying policymakers and employers to improve conditions across the sector.",
   },
   {
     id: 7,
@@ -43,7 +43,7 @@ export const questions: Question[] = [
   },
   {
     id: 9,
-    text: "Members should appreciate the union as an independent third party in the workplace.",
+    text: "Members should value the union as an independent third party in the workplace.",
   },
   {
     id: 10,
@@ -51,7 +51,7 @@ export const questions: Question[] = [
   },
   {
     id: 11,
-    text: "Negotiations should actively involve as many members as possible.",
+    text: "Negotiations should always involve as many members as possible.",
   },
   {
     id: 12,
@@ -59,11 +59,11 @@ export const questions: Question[] = [
   },
   {
     id: 13,
-    text: "Formal consultation and negotiation meetings are where the union can win the biggest changes.",
+    text: "Consultation and negotiation meetings are where the union wins for members.",
   },
   {
     id: 14,
-    text: "It's usually better for members to take action themselves than for reps to do it.",
+    text: "Reps are responsible for taking actions on members' behalf.",
   },
   {
     id: 15,
@@ -79,11 +79,11 @@ export const questions: Question[] = [
   },
   {
     id: 18,
-    text: "Negotiations conducted by reps and officials are the most important part of the union's work.",
+    text: "Reps and officials should not see formal negotiation meetings as a priority.",
   },
   {
     id: 19,
-    text: "If members have an issue they want to raise with management, they should get in touch with a rep to advocate for them.",
+    text: "If members have an issue, they should get in touch with a rep to handle it.",
   },
   {
     id: 20,
@@ -91,11 +91,11 @@ export const questions: Question[] = [
   },
   {
     id: 21,
-    text: "Decision-making and strategic planning is the responsibility of members, not reps or officials.",
+    text: "Decision-making and strategic planning is the responsibility of every member.",
   },
   {
     id: 22,
-    text: "The most valuable training is on employment law, procedures, and policy enforcement.",
+    text: "Training on employment law and policy should not be a top priority for reps.",
   },
   {
     id: 23,
@@ -115,7 +115,7 @@ export const questions: Question[] = [
   },
   {
     id: 27,
-    text: "Most meaningful wins are achieved through skilled and well-informed negotiation by reps and officials.",
+    text: "Skilled and well-informed negotiation by reps and officials is unlikely to achieve significant wins.",
   },
   {
     id: 28,
@@ -127,7 +127,7 @@ export const questions: Question[] = [
   },
   {
     id: 30,
-    text: "Recruiting is important, but not an essential part of the union's day-to-day work.",
+    text: "Recruiting is important, but not always a part of the union's day-to-day work.",
   },
   {
     id: 31,
@@ -139,7 +139,7 @@ export const questions: Question[] = [
   },
 ];
 
-export const reverseKeyed = [3, 9, 13, 31];
+export const reverseKeyed = [3, 9, 13, 14, 22, 27, 18, 31];
 
 export const dimensions: Dimension[] = [
   {
